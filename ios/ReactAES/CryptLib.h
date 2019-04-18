@@ -13,6 +13,7 @@
 -  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
 -  (NSData *)generateRandomIV:(size_t)length;
 -  (NSString *) md5:(NSString *) input;
+-  (NSString*) sha1:(NSString *)key;
 -  (NSString*) sha256:(NSString *)key length:(NSInteger) length;
 
 @end

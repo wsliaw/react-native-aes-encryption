@@ -67,6 +67,17 @@ RCT_EXPORT_METHOD(md5:(NSString *)input resolver:(RCTPromiseResolveBlock)resolve
  
 }
 
+RCT_EXPORT_METHOD(sha1:(NSString *)key resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    StringEncryption *cryptLib = [[StringEncryption alloc]init];
+    NSString *sha1 = [cryptLib sha1:key];
+    if(sha1){
+        resolve(sha1);
+    }else{
+        reject(@"-1", @"sha256 failed", nil);
+    }
+}
+
 RCT_EXPORT_METHOD(sha256:(NSString *)key length:(NSInteger) length resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     StringEncryption *cryptLib = [[StringEncryption alloc]init];

@@ -65,6 +65,17 @@ public class ReactAES  extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
+    public void sha1(final String key,Promise promise ){
+        try {
+            String returnKey = CryptLib.SHA1(key);
+            promise.resolve(returnKey);
+
+        } catch (Exception e) {
+            promise.reject("-1","sha1 failed");
+        }
+    }
+
+    @ReactMethod
     public void sha256(final String key,Integer length,Promise promise ){
         try {
             String returnKey = CryptLib.SHA256(key, length);

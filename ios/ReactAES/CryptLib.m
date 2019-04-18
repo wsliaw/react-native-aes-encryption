@@ -174,13 +174,33 @@
     return data;
 }
 
+
+- (NSString *)sha1:(NSString *)key
+{
+    NSData *data = [key dataUsingEncoding:NSUTF8StringEncoding];
+    uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+
+    CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
+
+    NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
+
+    for (int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++)
+    {
+        [output appendFormat:@"%02x", digest[i]];
+    }
+
+    return output;
+}
+
+
     /**
 	 * This function computes the SHA256 hash of input string
 	 * @param text input text whose SHA256 hash has to be computed
 	 * @param length length of the text to be returned
 	 * @return returns SHA256 hash of input text 
 	 */
-- (NSString*) sha256:(NSString *)key length:(NSInteger) length{
+- (NSString*) sha256:(NSString *)key length:(NSInteger) length
+{
     const char *s=[key cStringUsingEncoding:NSASCIIStringEncoding];
     NSData *keyData=[NSData dataWithBytes:s length:strlen(s)];
     
