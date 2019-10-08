@@ -193,6 +193,19 @@
 }
 
 
+- (NSString *)convertToHexFromData:(NSData *)data
+{
+  NSUInteger dataLength = data.length;
+  unsigned char *dataBytes = (unsigned char *)data.bytes;
+  NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:dataLength * 2];
+  for (int i = 0; i < dataLength; i++) {
+    [encoded appendFormat:@"%02x", dataBytes[i]];
+  }
+  NSString *value = [encoded lowercaseString];
+  return value;
+}
+
+
     /**
 	 * This function computes the SHA256 hash of input string
 	 * @param text input text whose SHA256 hash has to be computed
@@ -207,11 +220,9 @@
     uint8_t digest[CC_SHA256_DIGEST_LENGTH]={0};
     CC_SHA256(keyData.bytes, keyData.length, digest);
     NSData *out=[NSData dataWithBytes:digest length:CC_SHA256_DIGEST_LENGTH];
-    NSString *hash=[out description];
-    hash = [hash stringByReplacingOccurrencesOfString:@" " withString:@""];
-    hash = [hash stringByReplacingOccurrencesOfString:@"<" withString:@""];
-    hash = [hash stringByReplacingOccurrencesOfString:@">" withString:@""];
     
+    NSString *hash = [self convertToHexFromData: out];
+
     if(length > [hash length])
     {
         return  hash;
