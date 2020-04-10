@@ -42,7 +42,6 @@
 
 
 #import "CryptLib.h"
-#import "NSData+Base64.h"
 
 
 @implementation StringEncryption
@@ -87,12 +86,13 @@
                                      [plainText bytes], [plainText length], /* input  */
                                      buff, buffSize,/* data RETURNED here */
                                      &numBytesEncrypted);
+    NSData* data = nil;
     if (status == kCCSuccess) {
-        return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        data = [NSData dataWithBytes:buff length:numBytesEncrypted];
     }
     
     free(buff);
-    return nil;
+    return data;
 }
 
 
@@ -135,12 +135,14 @@
                                      [encryptedText bytes], [encryptedText length], //input
                                      buff, buffSize,//output
                                      &numBytesEncrypted);
+    
+    NSData* data = nil;
     if (status == kCCSuccess) {
-        return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        data = [NSData dataWithBytes:buff length:numBytesEncrypted];
     }
     
     free(buff);
-    return nil;
+    return data;
 }
 
 //this function is no longer used in encryption / decryption
