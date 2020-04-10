@@ -8,7 +8,6 @@
 
 #import "ReactAES.h"
 #import "CryptLib.h"
-#import "NSData+Base64.h"
 #import "RCTLog.h"
 
 @implementation ReactAES
@@ -19,8 +18,8 @@ RCT_EXPORT_METHOD(encrypt:(NSString *)plainText key:(NSString *)key iv:(NSString
 rejecter:(RCTPromiseRejectBlock)reject) {
     StringEncryption *cryptLib = [[StringEncryption alloc]init];
     NSData *encryptData = [cryptLib encrypt:[plainText dataUsingEncoding:NSUTF8StringEncoding] key:key iv:iv];
-    NSString *encryptStr =  [encryptData base64EncodingWithLineLength:0];
-    if(encrypt){
+    NSString * encryptStr = [[NSString alloc] initWithData:encryptData encoding:NSUTF8StringEncoding];
+    if(encryptStr){
         resolve(encryptStr);
     }else{
         reject(@"-1", @"encrypt failed", nil);
@@ -30,23 +29,22 @@ rejecter:(RCTPromiseRejectBlock)reject) {
 
 RCT_EXPORT_METHOD(decrypt:(NSString *)encryptedText key:(NSString *)key iv:(NSString *)iv resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    StringEncryption *cryptLib = [[StringEncryption alloc]init];
-    NSData * encryptData = [[NSData alloc] initWithBase64EncodedString: encryptedText];
+    StringEncryption *cryptLib = [[StringEncryption alloc] init];
+    NSData * encryptData = [[NSData alloc] initWithBase64EncodedString:encryptedText options:NSDataBase64DecodingIgnoreUnknownCharacters];
     NSData * decryptData = [cryptLib decrypt:encryptData key:key iv:iv];
     NSString * decryptedText = [[NSString alloc] initWithData:decryptData encoding:NSUTF8StringEncoding];
-    //NSString *decryptText = [decryptData base64EncodingWithLineLength:0];
     if(decryptedText){
         resolve(decryptedText);
     }else{
         reject(@"-1", @"decrypt failed", nil);
     }
-    
 }
 
 RCT_EXPORT_METHOD(generateRandomIV:(NSInteger)length resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    StringEncryption *cryptLib = [[StringEncryption alloc]init];
-    NSString * iv = [[[[StringEncryption alloc] generateRandomIV:11]  base64EncodingWithLineLength:0] substringToIndex:length];
+    StringEncryption *cryptLib = [[StringEncryption alloc] init];
+    NSData * ivData = [cryptLib generateRandomIV:11];
+    NSString*  iv = [[ivData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed] substringToIndex:length];
     if(iv){
         resolve(iv);
     }else{
