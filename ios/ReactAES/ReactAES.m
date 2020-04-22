@@ -18,7 +18,7 @@ RCT_EXPORT_METHOD(encrypt:(NSString *)plainText key:(NSString *)key iv:(NSString
 rejecter:(RCTPromiseRejectBlock)reject) {
     StringEncryption *cryptLib = [[StringEncryption alloc]init];
     NSData *encryptData = [cryptLib encrypt:[plainText dataUsingEncoding:NSUTF8StringEncoding] key:key iv:iv];
-    NSString * encryptStr = [[NSString alloc] initWithData:encryptData encoding:NSUTF8StringEncoding];
+    NSString * encryptStr = [encryptData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
     if(encryptStr){
         resolve(encryptStr);
     }else{
